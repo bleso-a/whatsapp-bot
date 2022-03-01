@@ -3,22 +3,26 @@ import time
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
+import threading, time, random
+
 
 # load Mantium credentials
 load_dotenv()
 mantium_user = os.getenv("MANTIUM_USER")
 mantium_password = os.getenv("MANTIUM_PASSWORD")
 
+
 from mantiumapi import prompt
 from mantiumapi import client
 
 # Mantium Token
 mantium_token = client.BearerAuth().get_token()
+SLEEP_TIME = 5
+PROMPT_ID = "98b58a5d-12ff-4e64-868e-4dabf986eac7"
 
 # Init Flask App
 app = Flask(__name__)
-
-
+   
 @app.route("/")
 def hello():
     return "Welcome to Mantium WhatsApp Bot"
@@ -28,19 +32,16 @@ def hello():
 def bot():
     incoming_msg = str(request.values.get("Body", "").lower())
     print(incoming_msg)
-    responded = False
-    if type(incoming_msg) == str:
-        qaPrompt = prompt.Prompt.from_id("98b58a5d-12ff-4e64-868e-4dabf986eac7")
-        result = qaPrompt.execute(incoming_msg)
-        result.refresh()
-        prompt_result = str(result.output)
-    else:
-        prompt_result = "I could not retrieve an answer for you, try again"
+    qaPrompt = prompt.Prompt.from_id(PROMPT_ID)
+        
+    result = qaPrompt.execute(incoming_msg)
+    time.sleep(SLEEP_TIME)
+    result.refresh()
+    prompt_result = str(result.output)
     resp = MessagingResponse()
     msg = resp.message()
     msg.body(prompt_result)
-    responded = True
-    
+    print(msg.body(prompt_result))
     return str(resp)
 
 
