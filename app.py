@@ -17,8 +17,8 @@ from mantiumapi import client
 
 # Mantium Token
 mantium_token = client.BearerAuth().get_token()
-SLEEP_TIME = 5
-PROMPT_ID = "98b58a5d-12ff-4e64-868e-4dabf986eac7"
+SLEEP_TIME = 1
+PROMPT_ID = "d7c7d47a-8ba3-41f6-90bb-a74312bcbfb0"
 
 # Init Flask App
 app = Flask(__name__)
@@ -39,9 +39,11 @@ def bot():
     result.refresh()
     prompt_result = str(result.output)
     resp = MessagingResponse()
-    msg = resp.message()
-    msg.body(prompt_result)
-    print(msg.body(prompt_result))
+    # msg = resp.message()
+    # msg.body(prompt_result)
+    # print(msg.body(prompt_result))
+    print(prompt_result)
+    resp.message(prompt_result)
     return str(resp)
 
 
